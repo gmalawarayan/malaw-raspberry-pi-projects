@@ -3,20 +3,20 @@
 ## Add an new user
 
 ```bash
-    sudo adduser malaw
+    sudo adduser <username>
     Add additional details as requested
 ```
 
 ## Add this user to adm group
 
 ```bash
-    sudo gpasswd -a malaw adm
+    sudo gpasswd -a <newly created username> adm
 ```
 
 ## Add this user to sudo group
 
 ```bash
-    sudo gpasswd -a malaw sudo
+    sudo gpasswd -a <newly created username> sudo
 ```
 
 ## Important Check if you are able to login using this account
@@ -101,7 +101,7 @@ Likewise disable all unused services
 ```bash
     sudoedit /etc/ssh/sshd_config
     Add this line under Authentication section just above #PubkeyAuthentication yes
-    AllowUsers malaw
+    AllowUsers <newly created username>
 ```
 
 ## Install fail2ban to stop bruteforce attack on Pi
