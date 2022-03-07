@@ -79,6 +79,12 @@ And Add this after that line
     "origin=Raspberry Pi Foundation,codename=\${distro_codename},label=Raspberry Pi Foundation";
 ```
 
+Check the logs if daily upgrades are working as configured
+
+```bash
+    cat /var/log/unattended-upgrades/unattended-upgrades.log
+```
+
 ## Disable the services that you are not using
 
 First, list all the services that are running now on the Pi
@@ -139,10 +145,4 @@ And add this to the file
 ```bash
     sudo systemctl enable --now fail2ban
     sudo systemctl restart sshd
-```
-
-## Check the logs if there is a daily update of upgrades happening as per configuration
-
-```bash
-    cat /var/log/unattended-upgrades/unattended-upgrades.log
 ```
