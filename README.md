@@ -1,13 +1,13 @@
 # Instructions to Secure Your RaspberryPi
 
-## Add an new user
+## Add an new user other than default pi user
 
 ```bash
     sudo adduser <username>
     Add additional details as requested
 ```
 
-## Add this user to adm group
+## Add this user to adm (Admin) Group
 
 ```bash
     sudo gpasswd -a <newly created username> adm
@@ -22,7 +22,7 @@
 ## Important Check if you are able to login using this account
 
 ```bash
-    ssh <username>@<pi-address>
+    ssh <newly created username>@<pi-address>
 ```
 
 If you are able to successfully login, ONLY THEN proceed to the next steps
@@ -40,15 +40,19 @@ Should return that you are 'root'
     sudo passwd -l pi
 ```
 
-## Next, let us not use any password for the user we created
+## Let us not use any password for the user we created
 
 ```bash
     sudo visudo
 ```
 
-and add this ```<username> ALL=(ALL) NOPASSWD:ALL```
+and add this line
 
-## Next, let us automate the upgrades on the RaspberryPi
+```bash
+    <username> ALL=(ALL) NOPASSWD:ALL
+```
+
+## Automate the upgrades on the RaspberryPi
 
 Install the unattended-upgrades package
 
@@ -63,22 +67,27 @@ Edit the unattended upgrades conf file
 ```
 
 Locate this line
-    "origin=Debian,codename=${distro_codename},label=Debian-Security";
-       And Add this after that line
+
 ```
-            "origin=Raspbian,codename=${distro_codename},label=Raspbian";
+    "origin=Debian,codename=${distro_codename},label=Debian-Security";
+```
+
+And Add this after that line
+
+```
+    "origin=Raspbian,codename=${distro_codename},label=Raspbian";
     "origin=Raspberry Pi Foundation,codename=\${distro_codename},label=Raspberry Pi Foundation";
 ```
 
-## Next, let us disable the services that we are not using
+## Disable the services that you are not using
 
-First, let us list all the services that are running now on the Pi
+First, list all the services that are running now on the Pi
 
 ```bash
     systemctl --type=service --state=active
 ```
 
-Since my Pi is connected over a LAN Cable, i can disable it by
+If Pi is connected over a LAN Cable, disable wifi by using this command
 
 ```bash
     sudo systemctl disable wpa_supplicant.service
@@ -86,7 +95,7 @@ Since my Pi is connected over a LAN Cable, i can disable it by
 
 Likewise disable all unused services
 
-## Next, let us install firewall on the Pi, follow the steps in order or you will mess up
+## Install firewall on the Pi, follow the steps in order or you will mess up
 
 ```bash
     sudo apt-get install ufw
@@ -100,11 +109,19 @@ Likewise disable all unused services
 
 ```bash
     sudoedit /etc/ssh/sshd_config
-    Add this line under Authentication section just above #PubkeyAuthentication yes
+```
+
+Add this line under Authentication section just above 
+
+```
+    #PubkeyAuthentication yes
+```
+
+```
     AllowUsers <newly created username>
 ```
 
-## Install fail2ban to stop bruteforce attack on Pi
+## Install fail2ban to stop bruteforce attack on your Raspberry Pi
 
 ```bash
     sudo apt-get install fail2ban
