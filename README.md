@@ -85,6 +85,12 @@ Check the logs if daily upgrades are working as configured
     cat /var/log/unattended-upgrades/unattended-upgrades.log
 ```
 
+You will also need to install power-management tool in order for Raspberry Pi to check if Raspberry Pi is on battery or on power to install the upgrades automatically. Install the package by using the command below.
+
+```bash
+    sudo apt-get install powermgmt-base
+```
+
 ## Disable the services that you are not using
 
 First, list all the services that are running now on the Pi
