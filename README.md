@@ -1,4 +1,4 @@
-# Instructions to Secure Your RaspberryPi
+# Secure Your RaspberryPi
 
 ## Add an new user other than default pi user
 
