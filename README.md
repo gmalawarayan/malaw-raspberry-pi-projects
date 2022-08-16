@@ -123,7 +123,7 @@ Likewise disable all unused services
     sudoedit /etc/ssh/sshd_config
 ```
 
-Add this line under Authentication section just above 
+Add this line under Authentication section just above
 
 ```
     #PubkeyAuthentication yes
@@ -141,9 +141,9 @@ Add this line under Authentication section just above
 ```
 
 And add this to the file
-    [DEFAULT]
-    bantime = 1h
-    banaction = ufw
+[DEFAULT]
+bantime = 1h
+banaction = ufw
 
     [sshd]
     enabled = true
@@ -151,4 +151,49 @@ And add this to the file
 ```bash
     sudo systemctl enable --now fail2ban
     sudo systemctl restart sshd
+```
+
+## Install samba server to serve as NAS on your Raspberry Pi
+
+Install Samba and its dependencies
+
+```bash
+    sudo apt-get install samba samba-common-bin
+```
+
+Create a folder to be shared, this shared folder should be mounted with the external hard drive
+
+```bash
+    mkdir /<path>/<tothe>/<foldertobeshared>
+```
+
+Edit the Samba Config file
+
+```bash
+    sudo nano /etc/samba/smb.conf
+```
+
+Add this to the file - smb.conf
+
+```bash
+    comment = <meaningful comment>
+    [<meaningfulfortheshare>]
+    path = /<path>/<tothe>/<foldertobeshared>
+    writeable=Yes
+    create mask=0777
+    directory mask=0777
+    public=no
+```
+
+Add an user to samba to let it access the share
+
+```bash
+    sudo smbpasswd -a pi
+```
+
+Restart the Samba Service and configure firewall to allow incoming traffic
+
+```bash
+    sudo systemctl restart smbd
+    sudo ufw allow samba
 ```
