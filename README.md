@@ -197,3 +197,23 @@ Restart the Samba Service and configure firewall to allow incoming traffic
     sudo systemctl restart smbd
     sudo ufw allow samba
 ```
+
+## Password Less Entry into your Raspberry Pi
+
+Create SSH Key Pairs, this create private and public keys. Public will have an extension of .pub
+
+```bash
+    ssh-keygen
+```
+
+Copy .pub file into RaspberryPi using the command
+
+```bash
+    ssh-copy-id <USERNAME>@<IP-ADDRESS>
+```
+
+Alternatively, if there are many pub files for some reasons
+
+```bash
+    cat ~/.ssh/id_rsa.pub | ssh <USERNAME>@<IP-ADDRESS> 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+```
