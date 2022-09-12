@@ -217,3 +217,28 @@ Alternatively, if there are many pub files for some reasons
 ```bash
     cat ~/.ssh/id_rsa.pub | ssh <USERNAME>@<IP-ADDRESS> 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
 ```
+
+## Capture your WAN IP using the shell script (capture-your-wan-ip.sh) and let it send an email when the WAN IP Address changes. Install mailutils to send email from the Raspberry Pi
+
+```bash
+    sudo apt-get install ssmtp
+    sudo apt-get install mailutils
+```
+
+## Configure the ssmtp.conf to include your email address and other settings
+
+```bash
+    root=postmaster
+    mailhub=smtp.gmail.com:587
+    hostname=RaspberryPi
+    AuthUser=<your email id>
+    AuthPass=<Go to Google Account Setting and Configure Password for APP and insert here>
+    FromLineOverride=YES
+    UseSTARTTLS=YES
+```
+
+## Set it as Cron Entry to run the shell script everyday in the morning - refer to capture-your-wan-ip.sh
+
+```bash
+    0 6 * * * /<Path to the file to execute>
+```
