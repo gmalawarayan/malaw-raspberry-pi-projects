@@ -242,3 +242,29 @@ Alternatively, if there are many pub files for some reasons
 ```bash
     0 6 * * * /<Path to the file to execute>
 ```
+
+## Install Avahi on to RaspberryPi to ping / login using a hostname rather than IP address
+
+```bash
+    sudo apt-get install avahi-daemon
+```
+
+After installing do update to run the service on boot up
+
+```bash
+    sudo update-rc.d avahi-daemon defaults
+```
+
+Check what is the current hostname by using this command
+
+```bash
+    hostname
+```
+
+You can edit / change the hostname by using this command
+
+```bash
+    sudo /etc/hostname
+```
+
+RaspberryPi will now be discoverable by the hostname appended with ".local" like "raspberrypi.local"
