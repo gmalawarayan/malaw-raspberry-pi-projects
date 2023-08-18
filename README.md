@@ -52,6 +52,16 @@ and add this line
     <username> ALL=(ALL) NOPASSWD:ALL
 ```
 
+## Create the ssh key pair and follow the instructions from the command
+```bash
+    ssh-keygen -t ed25519 -C "<comments>"
+```
+## Add the ssh public key generated to the authorized key file
+
+```bash
+ssh-copy-id -i ~/.ssh/<ssh-key>.pub -f <username>@<host-ip-address-or-hostname>
+```
+
 ## Automate the upgrades on the RaspberryPi
 
 Install the unattended-upgrades package
