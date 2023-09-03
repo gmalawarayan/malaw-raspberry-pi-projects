@@ -75,11 +75,12 @@ sudo install -d -m 700 ~/.ssh
 ```bash
 sudo nano ~/.ssh/authorized_keys
 ```
+And manually copy and paste the public key
 ```bash
 sudo chmod 644 ~/.ssh/authorized_keys
 ```
 ```bash
-sudo chown malaw:malaw ~/.ssh/authorized_keys
+sudo chown <username>:<usergroup> ~/.ssh/authorized_keys
 ```
 
 ## Automate the upgrades on the RaspberryPi
