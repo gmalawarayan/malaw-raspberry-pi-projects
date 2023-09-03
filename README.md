@@ -1,35 +1,33 @@
 # Secure Your RaspberryPi
 
-## Add an new user other than default pi user
-
+## Add an new user other than default pi user and add additional details as requested
 ```bash
-    sudo adduser <username>
-    Add additional details as requested
+sudo adduser <username>
 ```
 
 ## Add this user to adm (Admin) Group
 
 ```bash
-    sudo gpasswd -a <newly created username> adm
+sudo gpasswd -a <newly created username> adm
 ```
 
 ## Add this user to sudo group
 
 ```bash
-    sudo gpasswd -a <newly created username> sudo
+sudo gpasswd -a <newly created username> sudo
 ```
 
 ## Important Check if you are able to login using this account
 
 ```bash
-    ssh <newly created username>@<pi-address>
+ssh <newly created username>@<pi-address>
 ```
 
 If you are able to successfully login, ONLY THEN proceed to the next steps
 Ensure that you are in the sudoers group by issuing this command
 
 ```bash
-    sudo whoami
+sudo whoami
 ```
 
 Should return that you are 'root'
@@ -37,29 +35,51 @@ Should return that you are 'root'
 ## Lock the 'pi' account on the Raspberry pi
 
 ```bash
-    sudo passwd -l pi
+sudo passwd -l pi
 ```
 
 ## Let us not use any password for the user we created
 
 ```bash
-    sudo visudo
+sudo visudo
 ```
 
 and add this line
 
 ```bash
-    <username> ALL=(ALL) NOPASSWD:ALL
+<username> ALL=(ALL) NOPASSWD:ALL
 ```
 
-## Create the ssh key pair and follow the instructions from the command
+## Password Less Entry into your Raspberry Pi
+### Create the ssh key pair and follow the instructions from the command
+
 ```bash
-    ssh-keygen -t ed25519 -C "<comments>"
+ssh-keygen -t ed25519 -C "<comments>"
 ```
-## Add the ssh public key generated to the authorized key file
+### Add the ssh public key generated to the authorized key file
 
 ```bash
 ssh-copy-id -i ~/.ssh/<ssh-key>.pub -f <username>@<host-ip-address-or-hostname>
+```
+
+Alternatively, if there are many pub files for some reasons
+
+```bash
+cat ~/.ssh/id_rsa.pub | ssh <USERNAME>@<IP-ADDRESS> 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+```
+Another means of installing authorized keys 
+
+```bash 
+sudo install -d -m 700 ~/.ssh
+```
+```bash
+sudo nano ~/.ssh/authorized_keys
+```
+```bash
+sudo chmod 644 ~/.ssh/authorized_keys
+```
+```bash
+sudo chown malaw:malaw ~/.ssh/authorized_keys
 ```
 
 ## Automate the upgrades on the RaspberryPi
@@ -67,13 +87,13 @@ ssh-copy-id -i ~/.ssh/<ssh-key>.pub -f <username>@<host-ip-address-or-hostname>
 Install the unattended-upgrades package
 
 ```bash
-    sudo apt-get install unattended-upgrades
+sudo apt-get install unattended-upgrades
 ```
 
 Edit the unattended upgrades conf file
 
 ```bash
-    sudoedit /etc/apt/apt.conf.d/50unattended-upgrades
+sudoedit /etc/apt/apt.conf.d/50unattended-upgrades
 ```
 
 Locate this line
@@ -85,20 +105,24 @@ Locate this line
 And Add this after that line
 
 ```
-    "origin=Raspbian,codename=${distro_codename},label=Raspbian";
-    "origin=Raspberry Pi Foundation,codename=\${distro_codename},label=Raspberry Pi Foundation";
+"origin=Raspbian,codename=${distro_codename},label=Raspbian";
+"origin=Raspberry Pi Foundation,codename=\${distro_codename},label=Raspberry Pi Foundation";
 ```
-
-Check the logs if daily upgrades are working as configured
+Save and exit the file
 
 ```bash
-    cat /var/log/unattended-upgrades/unattended-upgrades.log
+sudo unattended-upgrades -d
+```
+To Check the logs if daily upgrades are working as configured
+
+```bash
+cat /var/log/unattended-upgrades/unattended-upgrades.log
 ```
 
 You will also need to install power-management tool in order for Raspberry Pi to check if Raspberry Pi is on battery or on power to install the upgrades automatically. Install the package by using the command below.
 
 ```bash
-    sudo apt-get install powermgmt-base
+sudo apt-get install powermgmt-base
 ```
 
 ## Disable the services that you are not using
@@ -106,13 +130,13 @@ You will also need to install power-management tool in order for Raspberry Pi to
 First, list all the services that are running now on the Pi
 
 ```bash
-    systemctl --type=service --state=active
+sudo systemctl --type=service --state=active
 ```
 
 If Pi is connected over a LAN Cable, disable wifi by using this command
 
 ```bash
-    sudo systemctl disable wpa_supplicant.service
+sudo systemctl disable wpa_supplicant.service
 ```
 
 Likewise disable all unused services
@@ -120,34 +144,41 @@ Likewise disable all unused services
 ## Install firewall on the Pi, follow the steps in order or you will mess up
 
 ```bash
-    sudo apt-get install ufw
-    sudo ufw allow 22/tcp comment "SSH"
-    sudo ufw allow samba
-    sudo ufw enable
-
+sudo apt-get install ufw
+```
+```bash
+sudo ufw allow 22/tcp comment "SSH"
+```
+```bash
+sudo ufw allow samba
+```
+```bash
+sudo ufw enable
 ```
 
 ## Allow only one user to ssh to your box
 
 ```bash
-    sudoedit /etc/ssh/sshd_config
+sudoedit /etc/ssh/sshd_config
 ```
 
-Add this line under Authentication section just above
+Add this line under Authentication section just above "#PubkeyAuthentication yes"
 
 ```
-    #PubkeyAuthentication yes
+AllowUsers <newly created username>
 ```
 
-```
-    AllowUsers <newly created username>
-```
+PubkeyAuthentication yes
+PasswordAuthentication yes
+PermitEmptyPasswords no
+
+Save and exit the file
 
 ## Install fail2ban to stop bruteforce attack on your Raspberry Pi
 
 ```bash
-    sudo apt-get install fail2ban
-    sudoedit /etc/fail2ban/jail.local
+sudo apt-get install fail2ban
+sudoedit /etc/fail2ban/jail.local
 ```
 
 And add this to the file
@@ -155,32 +186,49 @@ And add this to the file
 bantime = 1h
 banaction = ufw
 
-    [sshd]
-    enabled = true
+[sshd]
+enabled = true
 
 ```bash
-    sudo systemctl enable --now fail2ban
-    sudo systemctl restart sshd
+sudo systemctl enable --now fail2ban
+sudo systemctl restart sshd
 ```
 
 ## Install samba server to serve as NAS on your Raspberry Pi
 
+Create the folder to be shared, this shared folder should be mounted with the external hard drive
+
+```bash
+mkdir -p <path-to-the-folder-to-be-shared>
+```
+
+List the disks attached by their UUID
+```bash
+sudo ls -l /dev/disk/by-uuid/
+```
+
+```bash
+sudo nano /etc/fstab
+```
+
+Add this line to the file
+UUID=<uuid>	<path-to-the-folder-to-be-shared>	<filesystemType>	defaults	0 0
+
+```bash
+sudo mount -a
+```
+This should mount or show error, fix the errors 
+
 Install Samba and its dependencies
 
 ```bash
-    sudo apt-get install samba samba-common-bin
-```
-
-Create a folder to be shared, this shared folder should be mounted with the external hard drive
-
-```bash
-    mkdir /<path>/<tothe>/<foldertobeshared>
+sudo apt-get install samba samba-common-bin
 ```
 
 Edit the Samba Config file
 
 ```bash
-    sudo nano /etc/samba/smb.conf
+sudo nano /etc/samba/smb.conf
 ```
 
 Add this to the file - smb.conf
@@ -198,41 +246,25 @@ Add this to the file - smb.conf
 Add an user to samba to let it access the share
 
 ```bash
-    sudo smbpasswd -a pi
+sudo smbpasswd -a <newly-added-user>
 ```
 
 Restart the Samba Service and configure firewall to allow incoming traffic
 
 ```bash
-    sudo systemctl restart smbd
-    sudo ufw allow samba
+sudo systemctl restart smbd
 ```
-
-## Password Less Entry into your Raspberry Pi
-
-Create SSH Key Pairs, this create private and public keys. Public will have an extension of .pub
-
 ```bash
-    ssh-keygen
-```
-
-Copy .pub file into RaspberryPi using the command
-
-```bash
-    ssh-copy-id <USERNAME>@<IP-ADDRESS>
-```
-
-Alternatively, if there are many pub files for some reasons
-
-```bash
-    cat ~/.ssh/id_rsa.pub | ssh <USERNAME>@<IP-ADDRESS> 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+sudo ufw allow samba
 ```
 
 ## Capture your WAN IP using the shell script (capture-your-wan-ip.sh) and let it send an email when the WAN IP Address changes. Install mailutils to send email from the Raspberry Pi
 
 ```bash
-    sudo apt-get install ssmtp
-    sudo apt-get install mailutils
+sudo apt-get install ssmtp
+```
+```bash
+sudo apt-get install mailutils
 ```
 
 ## Configure the ssmtp.conf to include your email address and other settings
@@ -256,25 +288,25 @@ Alternatively, if there are many pub files for some reasons
 ## Install Avahi on to RaspberryPi to ping / login using a hostname rather than IP address
 
 ```bash
-    sudo apt-get install avahi-daemon
+sudo apt-get install avahi-daemon
 ```
 
 After installing do update to run the service on boot up
 
 ```bash
-    sudo update-rc.d avahi-daemon defaults
+sudo update-rc.d avahi-daemon defaults
 ```
 
 Check what is the current hostname by using this command
 
 ```bash
-    hostname
+hostname
 ```
 
 You can edit / change the hostname by using this command
 
 ```bash
-    sudo /etc/hostname
+sudo /etc/hostname
 ```
 
 RaspberryPi will now be discoverable by the hostname appended with ".local" like "raspberrypi.local"
