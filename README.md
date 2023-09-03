@@ -218,7 +218,10 @@ sudo nano /etc/fstab
 ```
 
 Add this line to the file
+
+```bash
 UUID=<uuid>	<path-to-the-folder-to-be-shared>	<filesystemType>	defaults	0 0
+```
 
 And test the mount configuration by using this command 
 
