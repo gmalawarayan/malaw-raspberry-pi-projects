@@ -109,7 +109,8 @@ And Add this after that line
 "origin=Raspbian,codename=${distro_codename},label=Raspbian";
 "origin=Raspberry Pi Foundation,codename=\${distro_codename},label=Raspberry Pi Foundation";
 ```
-Save and exit the file
+Save and exit the file.
+Check if the configuration of unattended upgrades by using the below command.
 
 ```bash
 sudo unattended-upgrades -d
@@ -134,7 +135,7 @@ First, list all the services that are running now on the Pi
 sudo systemctl --type=service --state=active
 ```
 
-If Pi is connected over a LAN Cable, disable wifi by using this command
+If RaspberryPi is connected over a LAN Cable, disable WiFi by using this command
 
 ```bash
 sudo systemctl disable wpa_supplicant.service
@@ -179,10 +180,12 @@ Save and exit the file
 
 ```bash
 sudo apt-get install fail2ban
+```
+```bash
 sudoedit /etc/fail2ban/jail.local
 ```
-
 And add this to the file
+
 [DEFAULT]
 bantime = 1h
 banaction = ufw
@@ -192,6 +195,8 @@ enabled = true
 
 ```bash
 sudo systemctl enable --now fail2ban
+```
+```bash
 sudo systemctl restart sshd
 ```
 
@@ -214,6 +219,8 @@ sudo nano /etc/fstab
 
 Add this line to the file
 UUID=<uuid>	<path-to-the-folder-to-be-shared>	<filesystemType>	defaults	0 0
+
+And test the mount configuration by using this command 
 
 ```bash
 sudo mount -a
@@ -283,7 +290,7 @@ sudo apt-get install mailutils
 ## Set it as Cron Entry to run the shell script everyday in the morning - refer to capture-your-wan-ip.sh
 
 ```bash
-    0 6 * * * /<Path to the file to execute>
+0 6 * * * /<Path to the file to execute>
 ```
 
 ## Install Avahi on to RaspberryPi to ping / login using a hostname rather than IP address
