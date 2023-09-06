@@ -35,7 +35,7 @@ if [ "$ip" == "$ipFromYesterday" ]
 		echo "*********** END OF TODAY - " $date " RUN ********************** "
         else
                 echo WARNING - IP HAS CHANGED
-		echo "Hello From Raspberry PI" | mail -s "WAN IP Has CHANGED" gmalawarayan@gmail.com
-                echo ${date} ${ip} IP HAS CHANGED >> my-wan-ip.txt
+				echo -e "Hello, \nYour WAN IP Address has changed \nFrom: " ${ipFromYesterday} "\nTo: " ${ip} "\n \n Thanks, \n Raspberry Pi WAM IP Checker" | mail -s "WAN IP Has CHANGED" gmalawarayan@gmail.com
+				echo ${date} ${ip} IP HAS CHANGED >> my-wan-ip.txt
 		echo "*********** END OF TODAY - " $date " RUN ********************** "
 fi
