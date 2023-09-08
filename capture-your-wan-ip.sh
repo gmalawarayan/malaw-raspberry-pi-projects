@@ -23,7 +23,7 @@ else
 	IFS=' ' read -r yesterdayDate yestedayDateTime ipFromYesterday comments < <(tail -n1 $filename)
 fi
 
-echo IP Address From MY-WAN-IP.TXT is - $yesterdayDate was $ipFromYesterday
+echo IP Address yesterday - $yesterdayDate from file - $filename was $ipFromYesterday
 
 echo IP Address Today - $date is $ip
 
