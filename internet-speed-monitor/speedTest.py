@@ -2,7 +2,7 @@ import os
 import re
 import subprocess
 import time
-# from influxdb import InfluxDBClient
+from influxdb import InfluxDBClient
 
 response = subprocess.Popen('speedtest --secure', shell=True, stdout=subprocess.PIPE, text=True).stdout.read()
 ping = re.search(':\s+(.*?)\s', response, re.MULTILINE)
@@ -12,10 +12,6 @@ upload = re.search('Upload:\s+(.*?)\s', response, re.MULTILINE)
 ping = ping.group(1)
 download = download.group(1)
 upload = upload.group(1)
-
-print("Ping >>" , ping)
-print("Download >>" , download)
-print("Upload >>" , upload)
 
 speed_data = [
     {
