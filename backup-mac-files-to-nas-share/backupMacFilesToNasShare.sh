@@ -16,8 +16,8 @@ else
 	touch ~/log/backup.log
 fi
 
-rsync -avp ~/Downloads/Personal /Volumes/share-for-the-Home/backup/backup-oc-2023/backup/personal_rsync >> ~/log/backup.log
-rsync -avp ~/Pictures/photos /Volumes/share-for-the-Home/backup/backup-oc-2023/backup/pictures_rsync >> ~/log/backup.log
-rsync -avp ~/Documents/documentsPersonal /Volumes/share-for-the-Home/backup/backup-oc-2023/backup/documents_rsync >> ~/log/backup.log
+rsync -avp ~/Downloads/folder-to-bakup/ /Volumes/nas-folder-name/folder-within-nas-/where-you-want-to-backup >> ~/log/backup.log
+rsync -avp ~/Pictures/folder-to-bakup/ /Volumes/nas-folder-name/folder-within-nas-/where-you-want-to-backup >> ~/log/backup.log
+rsync -avp ~/Documents/folder-to-bakup/ /Volumes/nas-folder-name/folder-within-nas-/where-you-want-to-backup >> ~/log/backup.log
 
 echo "*********** Ending Backup Task - " $date " - Rsync Of Folders Complete ***********"
