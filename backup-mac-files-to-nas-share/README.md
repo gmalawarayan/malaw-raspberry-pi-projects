@@ -6,6 +6,8 @@ Ensure "Full Disk Access" is granted to the Cron, Shell, Terminal and CronTab pr
 
 Go to Security & Privacy Preferences > Privacy and click Full Disk Access from the left panel and use CMD + SHIFT + G to bring up the "Go To" Menu and choose the programs
 
+Ensure "Login Items" has the folders for the NAS Shares - mounting the NAS Share on MacOs - Check this on the internet
+
 ## Set it as Cron Entry to run the shell script everyday
 
 ```bash
