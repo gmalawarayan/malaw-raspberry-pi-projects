@@ -294,3 +294,15 @@ sudo /etc/hostname
 ```
 
 RaspberryPi will now be discoverable by the hostname appended with ".local" like "raspberrypi.local"
+
+Disable Wifi and BT Service
+```bash
+sudo nano /boot/config.txt
+```
+Under [all], at the end of the file, add this 
+```bash
+[all]
+dtoverlay=disable-wifi
+dtoverlay=disable-bt
+```
+
