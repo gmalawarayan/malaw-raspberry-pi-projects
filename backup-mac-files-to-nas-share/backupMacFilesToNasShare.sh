@@ -1,23 +1,53 @@
 #!/bin/bash
+# For this script to work, ensure "Login Items" has the folder opened / accessed using "+" sign there. 
+# Apple menu > System Preferences > Accounts
+# Click on your account in the left column
+# Click on "login items"
+# Click the + sign
+# Select the NAS in the shared servers column in the Finder menu
+# Select the folder/volume you want on the NAS and click Add button.
 
-#DateToday
-date=`date +"%Y-%m-%d %T"`
+# Function to print the start of a backup task
+homeDir="/Users/<username>"
+log_file="$homeDir/log/backup.log"
+function print_start_backup {
+    local date=`date +"%Y-%m-%d %T"`
+    echo -e "\n*********** Starting Backup Task today - " $date " - Rsync Of Folders Begin ***********" >> $log_file
+}
 
-echo "*********** Starting Backup Task today - " $date " - Rsync Of Folders Begin ***********"
+# Function to check if the log file exists, if not create one
+function check_log_file {
+    local filename="~/log/backup.log"
+    if [ -f $filename ]
+    then
+        echo "Log file exists"
+    else
+        touch ~/log/backup.log
+    fi
+}
 
-#Reference file that stores current and previus WAN IP Address
-filename="~/log/backup.log"
+# Function to perform the backup
+function perform_backup {
+    local downloads_source_folder="$homeDir/Downloads/personal/"
+    local pictures_source_folder="$homeDir/Pictures/photos/"
+    local documents_source_folder="$homeDir/Documents/documentsPersonal/"
+    local downloads_destination_folder="/Volumes/<samba-share-drive-folder-path>"
+    local pictures_destination_folder="/Volumes/<samba-share-drive-folder-path>"
+    local documents_destination_folder="/Volumes/<samba-share-drive-folder-path>"
+    local log_file="$homeDir/log/backup.log"
 
-#Check if the Reference File exists else create one
-if [ -f $filename ]
-then
-    echo "it exists"
-else
-	touch ~/log/backup.log
-fi
+    echo -e "\n*********** Starting Backup of $downloads_source_folder ***********" >> $log_file
+    rsync --inplace -avp $downloads_source_folder $destination_folder >> $log_file
+    echo -e "\n*********** Complete Backup of $downloads_source_folder ***********" >> $log_file
+    echo -e "\n*********** Starting Backup of $pictures_source_folder ***********"  >> $log_file
+    rsync --inplace -avp $pictures_source_folder $pictures_destination_folder >> $log_file
+    echo -e "\n*********** Complete Backup of $pictures_source_folder ***********" >> $log_file
+    echo -e "\n*********** Starting Backup of $documents_source_folder ***********" >> $log_file
+    rsync --inplace -avp $documents_source_folder $documents_destination_folder >> $log_file
+    echo -e "\n*********** Complete Backup of $documents_source_folder ***********" >> $log_file
+}
 
-rsync -avp ~/Downloads/folder-to-bakup/ /Volumes/nas-folder-name/folder-within-nas-/where-you-want-to-backup >> ~/log/backup.log
-rsync -avp ~/Pictures/folder-to-bakup/ /Volumes/nas-folder-name/folder-within-nas-/where-you-want-to-backup >> ~/log/backup.log
-rsync -avp ~/Documents/folder-to-bakup/ /Volumes/nas-folder-name/folder-within-nas-/where-you-want-to-backup >> ~/log/backup.log
-
-echo "*********** Ending Backup Task - " $date " - Rsync Of Folders Complete ***********"
+# Main script
+print_start_backup
+check_log_file
+perform_backup
